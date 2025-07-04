@@ -1,3 +1,14 @@
+console.log("Required modules:", [
+  'dotenv', 'express', 'axios', 'node-telegram-bot-api'
+].map(module => {
+  try {
+    require.resolve(module);
+    return `${module}: OK`;
+  } catch {
+    return `${module}: MISSING`;
+  }
+}));
+
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
