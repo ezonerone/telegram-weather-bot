@@ -1,24 +1,9 @@
-
-// Add this before any other code
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '.env') });
-
-
-console.log("Required modules:", [
-  'dotenv', 'express', 'axios', 'node-telegram-bot-api'
-].map(module => {
-  try {
-    require.resolve(module);
-    return `${module}: OK`;
-  } catch {
-    return `${module}: MISSING`;
-  }
-}));
-
+// Load environment variables FIRST
 require('dotenv').config();
+
 const express = require('express');
 const axios = require('axios');
-const path = require('path');
+const path = require('path'); // Only declare this once
 const TelegramBot = require('node-telegram-bot-api');
 
 const app = express();
