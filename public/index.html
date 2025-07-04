@@ -64,6 +64,11 @@
             cursor: pointer;
         }
         
+        #location-btn {
+            padding: 0 15px;
+            font-size: 1.2rem;
+        }
+        
         .current-weather {
             background: var(--bg-secondary);
             border-radius: 20px;
@@ -121,6 +126,22 @@
             text-align: center;
             padding: 20px;
         }
+        
+        /* Debug console */
+        #debug-console {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -132,6 +153,7 @@
         <div class="search-box">
             <input type="text" id="city-input" placeholder="Enter city name">
             <button id="search-btn">Search</button>
+            <button id="location-btn">📍</button>
         </div>
         
         <div id="weather-container">
@@ -139,6 +161,71 @@
         </div>
     </div>
 
+    <!-- Debug Console -->
+    <div id="debug-console"></div>
+
     <script src="app.js"></script>
+    
+    <script>
+        // Debugging script
+        console.log('Telegram WebApp initialized');
+        console.log('Init data:', Telegram.WebApp.initData);
+        console.log('Init data unsafe:', Telegram.WebApp.initDataUnsafe);
+        
+        // Custom console that writes to debug div
+        const debugConsole = document.getElementById('debug-console');
+        
+        function debugLog(message) {
+            const line = document.createElement('div');
+            line.textContent = message;
+            debugConsole.appendChild(line);
+            debugConsole.scrollTop = debugConsole.scrollHeight;
+        }
+        
+        // Show debug console on triple click
+        let clickCount = 0;
+        document.addEventListener('click', () => {
+            clickCount++;
+            setTimeout(() => { clickCount = 0; }, 1000);
+            
+            if (clickCount === 3) {
+                debugConsole.style.display = 'block';
+                debugLog('[DEBUG] Console activated');
+            }
+        });
+        
+        // Override console methods
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info
+        };
+        
+        console.log = function(...args) {
+            originalConsole.log.apply(console, args);
+            debugLog('[LOG] ' + args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalConsole.error.apply(console, args);
+            debugLog('[ERROR] ' + args.join(' '));
+        };
+        
+        console.warn = function(...args) {
+            originalConsole.warn.apply(console, args);
+            debugLog('[WARN] ' + args.join(' '));
+        };
+        
+        console.info = function(...args) {
+            originalConsole.info.apply(console, args);
+            debugLog('[INFO] ' + args.join(' '));
+        };
+        
+        // Initial debug info
+        debugLog('App initialized');
+        debugLog(`User ID: ${Telegram.WebApp.initDataUnsafe.user?.id || 'unknown'}`);
+        debugLog(`Platform: ${Telegram.WebApp.platform}`);
+    </script>
 </body>
 </html>
