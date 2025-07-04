@@ -1,3 +1,9 @@
+
+// Add this before any other code
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+
+
 console.log("Required modules:", [
   'dotenv', 'express', 'axios', 'node-telegram-bot-api'
 ].map(module => {
