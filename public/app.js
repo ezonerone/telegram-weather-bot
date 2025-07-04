@@ -1,7 +1,6 @@
 // Telegram WebApp initialization
 const tg = window.Telegram.WebApp;
 tg.expand();
-tg.enableClosingConfirmation();
 tg.setHeaderColor('#0f172a');
 tg.setBackgroundColor('#0f172a');
 
@@ -9,7 +8,6 @@ tg.setBackgroundColor('#0f172a');
 const cityInput = document.getElementById('city-input');
 const searchBtn = document.getElementById('search-btn');
 const weatherContainer = document.getElementById('weather-container');
-const locationBtn = document.getElementById('location-btn');
 
 // Initialize with user's city from start_param if available
 if (tg.initDataUnsafe.start_param) {
@@ -17,7 +15,7 @@ if (tg.initDataUnsafe.start_param) {
     cityInput.value = city;
     getWeather(city);
 } else {
-    getWeather('London'); // Default city
+    getWeather('Moscow'); // Default city
 }
 
 // Event listeners
@@ -28,23 +26,6 @@ searchBtn.addEventListener('click', () => {
     } else {
         showError('Please enter a city name');
     }
-});
-
-locationBtn.addEventListener('click', () => {
-    tg.showPopup({
-        title: 'Location Access',
-        message: 'Allow weather app to access your location?',
-        buttons: [{ type: 'ok', text: 'Allow' }]
-    }, () => {
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                getWeatherByCoords(position.coords.latitude, position.coords.longitude);
-            },
-            error => {
-                showError('Failed to get location: ' + error.message);
-            }
-        );
-    });
 });
 
 // Get weather by city name
@@ -63,26 +44,6 @@ async function getWeather(city) {
     } catch (error) {
         showError('Failed to fetch weather data');
         console.error('Weather fetch error:', error);
-    }
-}
-
-// Get weather by coordinates
-async function getWeatherByCoords(lat, lon) {
-    showLoader();
-    
-    try {
-        const response = await fetch(`/weather?lat=${lat}&lon=${lon}`);
-        const data = await response.json();
-        
-        if (data.cod && data.cod !== 200) {
-            showError('Location weather unavailable');
-        } else {
-            cityInput.value = data.name;
-            renderWeather(data);
-        }
-    } catch (error) {
-        showError('Failed to get location weather');
-        console.error('Location weather error:', error);
     }
 }
 
