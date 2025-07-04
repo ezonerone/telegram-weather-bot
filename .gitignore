@@ -1,0 +1,7 @@
+# .gitignore
+node_modules/
+.env
+package-lock.json
+package.json
+bot.js
+bot1.js
